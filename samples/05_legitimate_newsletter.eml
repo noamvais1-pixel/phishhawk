@@ -1,0 +1,27 @@
+Return-Path: <bounce@mail.retailer-example.com>
+Received: from mta-42.mail.retailer-example.com (mta-42.mail.retailer-example.com [198.51.100.42])
+ by mx.example.com (Postfix) with ESMTPS id 77C31DD4
+ for <shopper@example.com>; Fri, 15 Aug 2025 06:00:12 +0000 (UTC)
+Authentication-Results: mx.example.com;
+ spf=pass smtp.mailfrom=mail.retailer-example.com;
+ dkim=pass header.d=retailer-example.com;
+ dmarc=pass header.from=retailer-example.com
+From: "Retailer Example" <deals@retailer-example.com>
+To: <shopper@example.com>
+Subject: Last chance! Summer sale ends today
+Date: Fri, 15 Aug 2025 06:00:10 +0000
+Message-ID: <camp-99812@mail.retailer-example.com>
+List-Unsubscribe: <https://retailer-example.com/unsubscribe?id=99812>
+List-Id: Retailer Example Deals <deals.retailer-example.com>
+Precedence: bulk
+X-Campaign-Id: summer-2025-final
+MIME-Version: 1.0
+Content-Type: text/html; charset="utf-8"
+
+<html><body>
+<h1>Last chance — the summer sale ends today!</h1>
+<p>Dear Customer, act now before these deals expire today at midnight.</p>
+<p><a href="https://retailer-example.com/sale/summer">Shop the sale</a></p>
+<p><a href="https://retailer-example.com/account">Your account</a> ·
+<a href="https://retailer-example.com/unsubscribe?id=99812">Unsubscribe</a></p>
+</body></html>

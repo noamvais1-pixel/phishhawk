@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "phishhawk"
+version = "1.0.0"
+description = "Offline phishing email triage and forensics — no dependencies, no network calls."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "noamvais1-pixel" }]
+keywords = [
+    "security", "phishing", "email", "forensics", "dfir", "soc",
+    "threat-intelligence", "ioc", "blue-team", "incident-response",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Communications :: Email",
+    "Topic :: Security",
+]
+# Intentionally empty: PhishHawk runs on the standard library alone, so it works
+# on an air-gapped analysis host with no package index available.
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/noamvais1-pixel/phishhawk"
+Source = "https://github.com/noamvais1-pixel/phishhawk"
+Issues = "https://github.com/noamvais1-pixel/phishhawk/issues"
+
+[project.scripts]
+phishhawk = "phishhawk.cli:main"
+
+[tool.setuptools]
+packages = ["phishhawk"]
+
+[tool.setuptools.package-data]
+phishhawk = ["py.typed"]

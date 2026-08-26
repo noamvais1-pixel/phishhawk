@@ -1,0 +1,7 @@
+# Normalize text by default.
+* text=auto eol=lf
+
+# Sample messages are byte-exact fixtures: their CRLF line endings are part of
+# the RFC 5322 format and the test suite compares them verbatim. Never let git
+# rewrite them on checkout.
+*.eml -text

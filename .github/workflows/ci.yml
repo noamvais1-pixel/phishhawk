@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: tests (py${{ matrix.python-version }} · ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        include:
+          - os: macos-latest
+            python-version: "3.13"
+          - os: windows-latest
+            python-version: "3.13"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Confirm every import is standard library
+        run: python tools/check_stdlib_only.py
+
+      - name: Run the test suite
+        run: python -m unittest discover -s tests -v
+
+      - name: Samples regenerate reproducibly
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          python samples/make_samples.py
+          if ! git diff --quiet -- samples/; then
+            echo "make_samples.py output differs from the committed samples:"
+            git --no-pager diff --stat -- samples/
+            exit 1
+          fi
+
+  smoke:
+    name: CLI smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Every sub-command runs
+        run: |
+          python -m phishhawk --version
+          python -m phishhawk rules --no-color
+          python -m phishhawk headers samples/01_credential_phish_m365.eml --no-color
+          python -m phishhawk iocs samples/ --no-color > /dev/null
+
+      - name: Malicious samples are flagged (exit 1 expected)
+        run: |
+          if python -m phishhawk triage samples/ --fail-on HIGH --no-color; then
+            echo "::error::known-malicious samples were not flagged"
+            exit 1
+          fi
+          echo "Malicious samples correctly flagged."
+
+      - name: Legitimate samples are not flagged (exit 0 expected)
+        run: |
+          python -m phishhawk scan samples/04_legitimate_github.eml --no-color
+          python -m phishhawk scan samples/05_legitimate_newsletter.eml --no-color
+
+      - name: Every output format produces valid output
+        run: |
+          python -m phishhawk triage samples/ -f json --no-color | python -c "import json,sys; json.load(sys.stdin)"
+          python -m phishhawk triage samples/ -f csv  --no-color > /dev/null
+          python -m phishhawk triage samples/ -f html --no-color > report.html
+          python -m phishhawk triage samples/ -f markdown --no-color > /dev/null
+          python - <<'PY'
+          from html.parser import HTMLParser
+          VOID = {'br','img','input','meta','link','hr','area','base','col','embed','source','track','wbr'}
+          class Check(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.stack=[]; self.errors=[]
+              def handle_starttag(self, tag, attrs):
+                  if tag not in VOID: self.stack.append(tag)
+              def handle_endtag(self, tag):
+                  if tag in VOID: return
+                  if not self.stack or self.stack.pop() != tag:
+                      self.errors.append(tag)
+          doc = open("report.html", encoding="utf-8").read()
+          c = Check(); c.feed(doc)
+          assert not c.errors and not c.stack, f"malformed HTML: {c.errors} {c.stack}"
+          assert "cdn" not in doc and "<script" not in doc, "report must stay self-contained"
+          print("HTML report is well-formed and self-contained.")
+          PY
+
+      - name: Indicators are defanged by default
+        run: |
+          if python -m phishhawk iocs samples/ --no-color | grep -q "https://"; then
+            echo "::error::live URLs leaked into defanged output"
+            exit 1
+          fi
+          echo "All indicators defanged."
+
+  package:
+    name: Package builds and installs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install --upgrade pip build
+      - run: python -m build
+      - name: Install the wheel and run the console script
+        run: |
+          python -m pip install dist/*.whl
+          phishhawk --version
+          phishhawk rules --no-color > /dev/null

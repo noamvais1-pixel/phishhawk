@@ -1,0 +1,25 @@
+Return-Path: <alerts@xn--pypal-4ve.com>
+Received: from relay.bulk-sender.gq (relay.bulk-sender.gq [91.219.236.18])
+ by mx.example.com (Postfix) with ESMTP id 3EE0A992
+ for <user@example.com>; Sat, 16 Aug 2025 11:20:44 +0000 (UTC)
+Authentication-Results: mx.example.com;
+ spf=fail smtp.mailfrom=xn--pypal-4ve.com;
+ dmarc=fail header.from=xn--pypal-4ve.com
+From: "PayPal Service" <alerts@xn--pypal-4ve.com>
+To: undisclosed-recipients:;
+Subject: Your account has been limited
+Date: Sat, 16 Aug 2025 11:20:40 +0000
+Message-ID: <99182773@relay.bulk-sender.gq>
+MIME-Version: 1.0
+Content-Type: text/html; charset="utf-8"
+
+<html><body>
+<p>Dear valued customer,</p>
+<p>We have detected unusual activity on your account. Your access has been
+restricted as a precaution. You must confirm your identity within 48 hours or
+your account will be permanently closed.</p>
+<p><a href="https://bit.ly/3xKq9Zp">https://www.paypal.com/signin</a></p>
+<p><a href="http://192.0.2.77:8080/paypal/login/verify.php?email=user@example.com">Restore access</a></p>
+<p><a href="https://accounts-paypal.firebaseapp.com/secure/update">Alternative link</a></p>
+<img src="https://tracker.bulk-sender.gq/o.gif?id=99182773" width="1" height="1">
+</body></html>

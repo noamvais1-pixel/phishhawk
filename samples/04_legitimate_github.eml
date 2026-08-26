@@ -1,0 +1,27 @@
+Return-Path: <bounce-3391@notifications.github.com>
+Received: from out-24.smtp.github.com (out-24.smtp.github.com [192.30.252.204])
+ by mx.example.com (Postfix) with ESMTPS id 55D9A118
+ for <dev@example.com>; Mon, 11 Aug 2025 09:31:47 +0000 (UTC)
+Authentication-Results: mx.example.com;
+ spf=pass smtp.mailfrom=notifications.github.com;
+ dkim=pass header.d=github.com;
+ dmarc=pass header.from=github.com
+From: "GitHub" <notifications@github.com>
+To: <dev@example.com>
+Subject: [example/repo] Pull request #142 was merged
+Date: Mon, 11 Aug 2025 09:31:45 +0000
+Message-ID: <example/repo/pull/142@github.com>
+List-Id: example/repo <repo.example.github.com>
+List-Unsubscribe: <https://github.com/notifications/unsubscribe/ABC123>
+Precedence: list
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+@octocat merged pull request #142 into main.
+
+View it on GitHub:
+https://github.com/example/repo/pull/142
+
+You are receiving this because you were mentioned.
+Reply to this email directly, or unsubscribe:
+https://github.com/notifications/unsubscribe/ABC123
