@@ -1,5 +1,10 @@
 # 🦅 PhishHawk
 
+[![CI](https://github.com/noamvais1-pixel/phishhawk/actions/workflows/ci.yml/badge.svg)](https://github.com/noamvais1-pixel/phishhawk/actions/workflows/ci.yml)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Dependencies: none](https://img.shields.io/badge/dependencies-none-brightgreen)](pyproject.toml)
+
 **Offline phishing email triage and forensics.** Point it at a suspicious `.eml`
 file — or a folder of hundreds — and get an explainable risk verdict, the
 evidence behind it, and a defanged indicator list you can paste straight into a
