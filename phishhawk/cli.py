@@ -296,7 +296,10 @@ def cmd_headers(args: argparse.Namespace) -> int:
             for key, value in parsed.headers:
                 print(f"  {_c(key, DIM, color)}: {value[:400]}")
     print()
-    return _exit_code(results, "SUSPICIOUS")
+    # `headers` is a viewer, not a detector: it renders what is in the message
+    # and makes no judgement, so it succeeds whenever it could read the input.
+    # Scripts running under `set -e` can use it without special-casing.
+    return EXIT_OK
 
 
 def cmd_rules(args: argparse.Namespace) -> int:

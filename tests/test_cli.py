@@ -169,6 +169,11 @@ class TestIOCs(unittest.TestCase):
 
 
 class TestHeaders(unittest.TestCase):
+    def test_succeeds_even_on_malicious_mail(self) -> None:
+        """`headers` only renders; it must not fail a `set -e` script."""
+        code, _, _ = run("headers", PHISH, "--no-color")
+        self.assertEqual(code, EXIT_OK)
+
     def test_chain_and_auth_rendered(self) -> None:
         _, out, _ = run("headers", PHISH, "--no-color")
         self.assertIn("authentication", out)

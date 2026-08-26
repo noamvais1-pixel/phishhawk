@@ -59,12 +59,19 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Every sub-command runs
+      - name: Inspection sub-commands succeed even on malicious mail
         run: |
           python -m phishhawk --version
           python -m phishhawk rules --no-color
           python -m phishhawk headers samples/01_credential_phish_m365.eml --no-color
-          python -m phishhawk iocs samples/ --no-color > /dev/null
+
+      - name: Detection sub-commands report findings via exit code 1
+        run: |
+          if python -m phishhawk iocs samples/ --no-color > /dev/null; then
+            echo "::error::iocs should exit 1 when the corpus contains flagged mail"
+            exit 1
+          fi
+          echo "Detection exit codes behave as documented."
 
       - name: Malicious samples are flagged (exit 1 expected)
         run: |
@@ -81,10 +88,14 @@ jobs:
 
       - name: Every output format produces valid output
         run: |
-          python -m phishhawk triage samples/ -f json --no-color | python -c "import json,sys; json.load(sys.stdin)"
-          python -m phishhawk triage samples/ -f csv  --no-color > /dev/null
-          python -m phishhawk triage samples/ -f html --no-color > report.html
-          python -m phishhawk triage samples/ -f markdown --no-color > /dev/null
+          # The sample corpus contains malicious mail, so triage exits 1 by
+          # design. Only the output is under test here, so tolerate that.
+          run_triage() { python -m phishhawk triage samples/ --no-color "$@" || [ $? -eq 1 ]; }
+
+          run_triage -f json | python -c "import json,sys; json.load(sys.stdin)"
+          run_triage -f csv  > /dev/null
+          run_triage -f markdown > /dev/null
+          run_triage -f html > report.html
           python - <<'PY'
           from html.parser import HTMLParser
           VOID = {'br','img','input','meta','link','hr','area','base','col','embed','source','track','wbr'}

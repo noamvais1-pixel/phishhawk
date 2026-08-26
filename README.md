@@ -257,6 +257,10 @@ Exit codes make it usable in a pipeline:
 | `2` | Error |
 | `3` | No messages to analyze |
 
+The detection commands — `scan`, `triage` and `iocs` — use code `1` to report
+findings. The inspection commands — `headers` and `rules` — only render what is
+there and always exit `0`, so they are safe under `set -e`.
+
 ```bash
 # Gate a mail-drop directory in CI
 python3 -m phishhawk triage ./incoming/ --fail-on HIGH --no-color || \
@@ -340,7 +344,7 @@ that would reclassify a message fails CI immediately.
 python3 -m unittest discover -s tests -v
 ```
 
-145 tests covering MIME parsing, IOC extraction, every detection rule, the
+146 tests covering MIME parsing, IOC extraction, every detection rule, the
 scoring engine, all five output formats and the full CLI surface. Runs in well
 under a second, on CPython 3.10 through 3.13.
 
