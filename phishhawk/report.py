@@ -331,7 +331,7 @@ def format_markdown(analysis: Analysis) -> str:
 
 
 _HTML_CSS = """
-:root{--bg:#0f1117;--card:#171a23;--line:#262b38;--fg:#e6e8ee;--dim:#8b93a7;
+:root{color-scheme:dark;--bg:#0f1117;--card:#171a23;--line:#262b38;--fg:#e6e8ee;--dim:#8b93a7;
 --crit:#ff4757;--high:#ff7f50;--susp:#ffc048;--low:#4bcffa;--benign:#32d296;--accent:#7d5fff}
 *{box-sizing:border-box}
 body{margin:0;padding:2rem 1rem;background:var(--bg);color:var(--fg);
@@ -390,7 +390,8 @@ def format_html(analyses: Sequence[Analysis], title: str = "PhishHawk report") -
     esc = html.escape
     parts = [
         "<!doctype html><html lang='en'><head><meta charset='utf-8'>",
-        "<meta name='viewport' content='width=device-width,initial-scale=1'>",
+        "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+        "<meta name='color-scheme' content='dark'>",
         f"<title>{esc(title)}</title><style>{_HTML_CSS}</style></head><body><div class='wrap'>",
         f"<h1>{esc(title)}</h1>",
         f"<p class='sub'>{len(analyses)} message(s) analyzed offline · "
@@ -434,7 +435,8 @@ def _html_one(analysis: Analysis, esc: Any) -> str:
     out = ["<div class='card'>"]
     out.append(f"<span class='badge {analysis.verdict}'>{analysis.verdict}</span> "
                f"<strong style='margin-left:.5rem'>{analysis.score}/100</strong>")
-    out.append(f"<div class='meter'><div style='width:{analysis.score}%;background:{color}'></div></div>")
+    # the bar repeats the score printed just above it, so hide it from screen readers
+    out.append(f"<div class='meter' aria-hidden='true'><div style='width:{analysis.score}%;background:{color}'></div></div>")
 
     out.append("<dl class='kv'>")
     out.append(f"<dt>Source</dt><dd><code>{esc(analysis.source)}</code></dd>")
